@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package com.android.tools.metadata;
+
+option java_package = "com.android.tools.metadata";
+option java_multiple_files = true;
+
+message Metadata {
+  // The version of app metadata encoder.
+  string app_metadata_encoder_version = 1;
+
+  // All the metadata entries.
+  repeated MetadataEntry metadata_entries = 2;
+}
+
+message MetadataEntry {
+  // Key of metadata entry.
+  string key = 1;
+
+  // Value of metadata entry.
+  string value = 2;
+}

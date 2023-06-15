@@ -1,0 +1,93 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "com.google.protobuf:protobuf-gradle-plugin:0.8.13"
+    }
+}
+
+apply plugin: "com.google.protobuf"
+apply plugin: "application"
+apply plugin: "java"
+
+repositories {
+    google()
+    mavenCentral()
+}
+
+dependencies {
+    implementation "com.android:zipflinger:7.4.2"
+    implementation "info.picocli:picocli:4.1.4"
+    implementation "com.google.crypto.tink:tink:1.7.0"
+    compileOnly "com.google.auto.value:auto-value-annotations:1.6.2"
+    annotationProcessor "com.google.auto.value:auto-value:1.6.2"
+    implementation "com.google.flogger:flogger:0.7.4"
+    implementation "com.google.flogger:google-extensions:0.7.4"
+    runtimeOnly "com.google.flogger:flogger-system-backend:0.7.4"
+    implementation "com.google.guava:guava:31.0.1-jre"
+    implementation "com.google.protobuf:protobuf-java:3.19.2"
+    implementation "com.google.protobuf:protobuf-java-util:3.19.2"
+
+    testCompileOnly "com.google.auto.value:auto-value-annotations:1.6.2"
+    testAnnotationProcessor "com.google.auto.value:auto-value:1.6.2"
+    testImplementation "info.picocli:picocli:4.1.4"
+    testImplementation "com.google.crypto.tink:tink:1.7.0"
+    testImplementation "com.google.flogger:flogger:0.7.4"
+    testImplementation "com.google.flogger:google-extensions:0.7.4"
+    testRuntimeOnly "com.google.flogger:flogger-system-backend:0.7.4"
+    testImplementation "com.google.guava:guava:31.0.1-jre"
+    testImplementation "com.google.guava:guava-testlib:31.0.1-jre"
+    testImplementation "com.google.truth.extensions:truth-java8-extension:1.0.1"
+    testImplementation "com.google.truth.extensions:truth-proto-extension:1.0.1"
+    testImplementation "com.google.protobuf:protobuf-java:3.19.2"
+    testImplementation "com.google.protobuf:protobuf-java-util:3.19.2"
+    testImplementation "junit:junit:4.13.2"
+    testImplementation "org.junit.jupiter:junit-jupiter-api:5.8.2"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.8.2"
+}
+
+// Use utf-8 instead of the platform default encoding.
+compileJava.options.encoding = "UTF-8"
+compileTestJava.options.encoding = "UTF-8"
+
+// Compile for Java 8.
+if (JavaVersion.current() != JavaVersion.VERSION_1_8) {
+    compileJava.options.release = 8;
+}
+
+test {
+    testLogging {
+        events "passed", "skipped", "failed"
+        exceptionFormat "full"
+        showExceptions = true
+        showCauses = true
+    }
+}
+
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:3.19.2"
+    }
+}
+
+application {
+    mainClass = "com.android.tools.metadata.AppMetadataEncoderMain"
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': application.mainClass
+    }
+    from {
+        // Building Fat Jar.
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
+java {
+    withSourcesJar()
+}
