@@ -81,12 +81,6 @@ java -jar app_metadata_encoder.jar encode \
   --output=/path/to/app-out.apk
 ```
 
-To view third-party notices, run the tool with `notices` command:
-
-```shell
-java -jar app_metadata_encoder.jar notices
-```
-
 ## Encoding DRM metadata
 
 Play Store supports multiple reserved DRM-specific metadata keys that can be

@@ -21,6 +21,6 @@ public final class AppMetadataEncoderConstants {
 
   private AppMetadataEncoderConstants() {}
 
-  public static final String CURRENT_VERSION = "0.1.2";
+  public static final String CURRENT_VERSION = "0.1.3";
   public static final String METADATA_NAMESPACE = "com.android.tools.metadata";
 }

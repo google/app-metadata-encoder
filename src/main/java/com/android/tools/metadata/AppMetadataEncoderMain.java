@@ -26,7 +26,7 @@ import picocli.CommandLine.Command;
 @Command(
     mixinStandardHelpOptions = true,
     version = AppMetadataEncoderConstants.CURRENT_VERSION,
-    subcommands = {AppMetadataEncodeCommand.class, AppMetadataNoticesCommand.class})
+    subcommands = {AppMetadataEncodeCommand.class})
 public final class AppMetadataEncoderMain implements Callable<Integer> {
   @Override
   public Integer call() throws Exception {

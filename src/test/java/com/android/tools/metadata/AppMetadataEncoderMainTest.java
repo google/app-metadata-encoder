@@ -31,6 +31,7 @@ import com.google.crypto.tink.KeysetHandle;
 import com.google.crypto.tink.hybrid.HybridConfig;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.Before;
@@ -44,7 +45,6 @@ import picocli.CommandLine;
 @RunWith(JUnit4.class)
 public final class AppMetadataEncoderMainTest {
   private static final String ENCODE_COMMAND = "encode";
-  private static final String NOTICES_COMMAND = "notices";
   private static final String VERBOSE_FLAG = "--verbose";
   private static final String TYPE_FLAG = "--type=some_type";
   private static final String METADATA1_FLAG = "--metadata=key=value";
@@ -64,6 +64,9 @@ public final class AppMetadataEncoderMainTest {
     // Add log handler to assert the logged messages.
     testLogHandler = new TestLogHandler();
     Logger.getLogger("").addHandler(testLogHandler);
+
+    // Reset log level between tests
+    Logger.getLogger(checkNotNull(LoggingUtils.class.getPackage()).getName()).setLevel(Level.INFO);
 
     // Creating encryption key using tink.
     encryptionKeyFile = new File(tempFolder.getRoot(), "public_key.bin");
@@ -316,7 +319,7 @@ public final class AppMetadataEncoderMainTest {
         "--output=" + getOutputFilePath("apk"));
 
     assertThat(getLogMessages())
-        .containsExactly("SEVERE: Missing required option '--metadata=<String=String>'", "FINE: ");
+        .containsExactly("SEVERE: Missing required option '--metadata=<String=String>'");
   }
 
   @Test
@@ -397,17 +400,6 @@ public final class AppMetadataEncoderMainTest {
     assertThat(getLogMessages())
         .containsExactly(
             String.format("SEVERE: Failed to read the encryption key from file: %s.", keyPath));
-  }
-
-  @Test
-  public void runNoticesCommand_logsThirdPartyNotices() {
-    int exitCode = commandLine.execute(NOTICES_COMMAND);
-
-    assertThat(Iterables.getOnlyElement(getLogMessages()))
-        .contains(
-            "The following software may be included in this product and contains the license and"
-                + " notice as shown below.");
-    assertThat(exitCode).isEqualTo(0);
   }
 
   private String getOutputFilePath(String fileExtension) throws Exception {
